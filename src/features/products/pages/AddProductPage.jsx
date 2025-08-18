@@ -1,50 +1,50 @@
-import React, { useState } from 'react';
-import { useAddProduct, useUploadImages } from '../hooks/useProducts';
-import FormInput from '../components/FormInput';
-import FormSelect from '../components/FormSelect';
-import FormRadioGroup from '../components/FormRadioGroup';
-import FormTextEditor from '../components/FormTextEditor';
-import ImageUpload from '../components/ImageUpload';
-import ProductPreview from '../components/ProductPreview';
-import { Eye, EyeOff, Upload, X, Check } from 'lucide-react';
-import { 
-  categories, 
-  carModels, 
-  performanceCategories, 
-  performanceSubcategories, 
+import React, { useState } from "react";
+import { useAddProduct, useUploadImages } from "../hooks/useProducts";
+import FormInput from "../components/FormInput";
+import FormSelect from "../components/FormSelect";
+import FormRadioGroup from "../components/FormRadioGroup";
+import FormTextEditor from "../components/FormTextEditor";
+import ImageUpload from "../components/ImageUpload";
+import ProductPreview from "../components/ProductPreview";
+import { Eye, EyeOff, Upload, X, Check } from "lucide-react";
+import {
+  categories,
+  carModels,
+  performanceCategories,
+  performanceSubcategories,
   performanceFinalCategories,
   ExhaustSubCategory,
-  SuspensionPartsSubCategory
-} from '../../../data';
-import { 
-  itemsOther, 
-  itemsInterior, 
-  itemsExterior, 
-  itemsLighting, 
-  itemsBodykits 
-} from '../../../data';
+  SuspensionPartsSubCategory,
+} from "../../../data";
+import {
+  itemsOther,
+  itemsInterior,
+  itemsExterior,
+  itemsLighting,
+  itemsBodykits,
+} from "../../../data";
 
 const AddProductPage = () => {
   const [formData, setFormData] = useState({
-    product_name: '',
-    price: '',
-    quantity_left: '',
-    car_brand: '',
-    car_model: '',
-    make_material: '',
+    product_name: "",
+    price: "",
+    quantity_left: "",
+    car_brand: "",
+    car_model: "",
+    make_material: "",
     hot_product: false,
     performance_part: false,
-    fit_position: '',
-    category: '',
-    subcategory: '',
-    final_subcategory: '',
-    category_brand: '',
-    wheel_size: '',
-    description: '',
-    features: '',
-    fitment: '',
-    video: '',
-    images: []
+    fit_position: "",
+    category: "",
+    subcategory: "",
+    final_subcategory: "",
+    category_brand: "",
+    wheel_size: "",
+    description: "",
+    features: "",
+    fitment: "",
+    video: "",
+    images: [],
   });
 
   const [errors, setErrors] = useState({});
@@ -54,23 +54,25 @@ const AddProductPage = () => {
   const uploadImagesMutation = useUploadImages();
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+      setErrors((prev) => ({ ...prev, [field]: "" }));
     }
   };
 
   const handleImagesChange = (images) => {
-    setFormData(prev => ({ ...prev, images }));
+    setFormData((prev) => ({ ...prev, images }));
   };
 
   const validateForm = () => {
     const newErrors = {};
-    
-    if (!formData.product_name) newErrors.product_name = 'Product name is required';
-    if (!formData.price) newErrors.price = 'Price is required';
-    if (formData.images.length === 0) newErrors.images = 'At least one image is required';
+
+    if (!formData.product_name)
+      newErrors.product_name = "Product name is required";
+    if (!formData.price) newErrors.price = "Price is required";
+    if (formData.images.length === 0)
+      newErrors.images = "At least one image is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -83,12 +85,14 @@ const AddProductPage = () => {
       // Upload images first
       if (formData.images.length > 0) {
         const formDataImages = new FormData();
-        formData.images.forEach(image => {
-          formDataImages.append('imageFiles[]', image.file);
+        formData.images.forEach((image) => {
+          formDataImages.append("imageFiles[]", image.file);
         });
 
-        const uploadResult = await uploadImagesMutation.mutateAsync(formDataImages);
-        console.log('Upload result:', uploadResult);
+        const uploadResult = await uploadImagesMutation.mutateAsync(
+          formDataImages
+        );
+        console.log("Upload result:", uploadResult);
       }
 
       // Prepare product data
@@ -96,41 +100,41 @@ const AddProductPage = () => {
         ...formData,
         price: Number.parseFloat(formData.price),
         quantity_left: Number.parseFloat(formData.quantity_left),
-        images: formData.images.map(img => img.name),
-        rating: 1
+        images: formData.images.map((img) => img.name),
+        rating: 1,
       };
 
       // Add product
       await addProductMutation.mutateAsync(productData);
-      
+
       // Reset form
       setFormData({
-        product_name: '',
-        price: '',
-        quantity_left: '',
-        car_brand: '',
-        car_model: '',
-        make_material: '',
+        product_name: "",
+        price: "",
+        quantity_left: "",
+        car_brand: "",
+        car_model: "",
+        make_material: "",
         hot_product: false,
         performance_part: false,
-        fit_position: '',
-        category: '',
-        subcategory: '',
-        final_subcategory: '',
-        category_brand: '',
-        wheel_size: '',
-        description: '',
-        features: '',
-        fitment: '',
-        video: '',
-        images: []
+        fit_position: "",
+        category: "",
+        subcategory: "",
+        final_subcategory: "",
+        category_brand: "",
+        wheel_size: "",
+        description: "",
+        features: "",
+        fitment: "",
+        video: "",
+        images: [],
       });
-      
+
       setShowPreview(false);
-      alert('Product added successfully!');
+      alert("Product added successfully!");
     } catch (error) {
-      console.error('Error adding product:', error);
-      alert('Error adding product. Please try again.');
+      console.error("Error adding product:", error);
+      alert("Error adding product. Please try again.");
     }
   };
 
@@ -142,27 +146,42 @@ const AddProductPage = () => {
 
   const getCategoryOptions = () => {
     if (!formData.fit_position) return [];
-    
+
     switch (formData.fit_position) {
-      case 'other':
-        return itemsOther.map(item => ({ value: item.text, label: item.text }));
-      case 'interior':
-        return itemsInterior.map(item => ({ value: item.text, label: item.text }));
-      case 'exterior':
-        return itemsExterior.map(item => ({ value: item.text, label: item.text }));
-      case 'body kit':
-        return itemsBodykits.map(item => ({ value: item.text, label: item.text }));
-      case 'lighting':
-        return itemsLighting.map(item => ({ value: item.text, label: item.text }));
+      case "other":
+        return itemsOther.map((item) => ({
+          value: item.text,
+          label: item.text,
+        }));
+      case "interior":
+        return itemsInterior.map((item) => ({
+          value: item.text,
+          label: item.text,
+        }));
+      case "exterior":
+        return itemsExterior.map((item) => ({
+          value: item.text,
+          label: item.text,
+        }));
+      case "body kit":
+        return itemsBodykits.map((item) => ({
+          value: item.text,
+          label: item.text,
+        }));
+      case "lighting":
+        return itemsLighting.map((item) => ({
+          value: item.text,
+          label: item.text,
+        }));
       default:
         return [];
     }
   };
 
   const getSubcategoryOptions = () => {
-    if (formData.category === 'Exhaust') {
+    if (formData.category === "Exhaust") {
       return ExhaustSubCategory;
-    } else if (formData.category === 'Suspension parts') {
+    } else if (formData.category === "Suspension parts") {
       return SuspensionPartsSubCategory;
     }
     return [];
@@ -177,15 +196,15 @@ const AddProductPage = () => {
   };
 
   const getFilteredCarModels = () => {
-    return carModels.filter(carModel => {
-      if (formData.car_brand === 'Toyota Corolla') {
-        return carModel.label.includes('Corolla');
-      } else if (formData.car_brand === 'Toyota Camry') {
-        return carModel.label.includes('Camry');
-      } else if (formData.car_brand === 'Toyota GR86') {
-        return carModel.label.includes('GR86');
-      } else if (formData.car_brand === 'Toyota Supra') {
-        return carModel.label.includes('SUPRA');
+    return carModels.filter((carModel) => {
+      if (formData.car_brand === "Toyota Corolla") {
+        return carModel.label.includes("Corolla");
+      } else if (formData.car_brand === "Toyota Camry") {
+        return carModel.label.includes("Camry");
+      } else if (formData.car_brand === "Toyota GR86") {
+        return carModel.label.includes("GR86");
+      } else if (formData.car_brand === "Toyota Supra") {
+        return carModel.label.includes("SUPRA");
       }
       return true;
     });
@@ -196,8 +215,12 @@ const AddProductPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-lg shadow">
           <div className="px-6 py-4 border-b border-gray-200">
-            <h1 className="text-2xl font-bold text-gray-900">Add New Product</h1>
-            <p className="mt-1 text-sm text-gray-600">Fill in the product details below</p>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Add New Product
+            </h1>
+            <p className="mt-1 text-sm text-gray-600">
+              Fill in the product details below
+            </p>
           </div>
 
           <div className="p-6">
@@ -206,17 +229,28 @@ const AddProductPage = () => {
               <div className="space-y-6">
                 <div className="bg-blue-50 p-4 rounded-lg">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-blue-900">Performance Part</span>
+                    <span className="text-sm font-medium text-blue-900">
+                      Performance Part
+                    </span>
                     <button
                       type="button"
-                      onClick={() => handleInputChange('performance_part', !formData.performance_part)}
+                      onClick={() =>
+                        handleInputChange(
+                          "performance_part",
+                          !formData.performance_part
+                        )
+                      }
                       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                        formData.performance_part ? 'bg-blue-600' : 'bg-gray-200'
+                        formData.performance_part
+                          ? "bg-blue-600"
+                          : "bg-gray-200"
                       }`}
                     >
                       <span
                         className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                          formData.performance_part ? 'translate-x-6' : 'translate-x-1'
+                          formData.performance_part
+                            ? "translate-x-6"
+                            : "translate-x-1"
                         }`}
                       />
                     </button>
@@ -234,7 +268,9 @@ const AddProductPage = () => {
                 <FormInput
                   label="Product Name"
                   value={formData.product_name}
-                  onChange={(e) => handleInputChange('product_name', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("product_name", e.target.value)
+                  }
                   placeholder="Enter product name"
                   required
                   error={errors.product_name}
@@ -244,7 +280,7 @@ const AddProductPage = () => {
                   label="Price ($)"
                   type="number"
                   value={formData.price}
-                  onChange={(e) => handleInputChange('price', e.target.value)}
+                  onChange={(e) => handleInputChange("price", e.target.value)}
                   placeholder="0.00"
                   required
                   error={errors.price}
@@ -254,7 +290,9 @@ const AddProductPage = () => {
                   label="Quantity Available"
                   type="number"
                   value={formData.quantity_left}
-                  onChange={(e) => handleInputChange('quantity_left', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("quantity_left", e.target.value)
+                  }
                   placeholder="0"
                   required
                   error={errors.quantity_left}
@@ -263,12 +301,14 @@ const AddProductPage = () => {
                 <FormRadioGroup
                   label="Car Brand"
                   value={formData.car_brand}
-                  onChange={(e) => handleInputChange('car_brand', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("car_brand", e.target.value)
+                  }
                   options={[
-                    { value: 'Toyota Corolla', label: 'Toyota Corolla' },
-                    { value: 'Toyota Camry', label: 'Toyota Camry' },
-                    { value: 'Toyota GR86', label: 'Toyota GR86' },
-                    { value: 'Toyota Supra', label: 'Toyota Supra' }
+                    { value: "Toyota Corolla", label: "Toyota Corolla" },
+                    { value: "Toyota Camry", label: "Toyota Camry" },
+                    { value: "Toyota GR86", label: "Toyota GR86" },
+                    { value: "Toyota Supra", label: "Toyota Supra" },
                   ]}
                   required
                   error={errors.car_brand}
@@ -277,7 +317,9 @@ const AddProductPage = () => {
                 <FormRadioGroup
                   label="Car Model"
                   value={formData.car_model}
-                  onChange={(e) => handleInputChange('car_model', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("car_model", e.target.value)
+                  }
                   options={getFilteredCarModels()}
                   required
                   error={errors.car_model}
@@ -286,20 +328,24 @@ const AddProductPage = () => {
                 <FormRadioGroup
                   label="Hot Product"
                   value={formData.hot_product}
-                  onChange={(e) => handleInputChange('hot_product', e.target.value === 'true')}
+                  onChange={(e) =>
+                    handleInputChange("hot_product", e.target.value === "true")
+                  }
                   options={[
-                    { value: true, label: 'Yes' },
-                    { value: false, label: 'No' }
+                    { value: true, label: "Yes" },
+                    { value: false, label: "No" },
                   ]}
                 />
 
                 <FormRadioGroup
                   label="Make Material"
                   value={formData.make_material}
-                  onChange={(e) => handleInputChange('make_material', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("make_material", e.target.value)
+                  }
                   options={[
-                    { value: 'carbon fiber', label: 'Carbon Fiber' },
-                    { value: 'Other', label: 'Other' }
+                    { value: "carbon fiber", label: "Carbon Fiber" },
+                    { value: "Other", label: "Other" },
                   ]}
                 />
               </div>
@@ -310,7 +356,9 @@ const AddProductPage = () => {
                   <FormRadioGroup
                     label="Category Type"
                     value={formData.fit_position}
-                    onChange={(e) => handleInputChange('fit_position', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("fit_position", e.target.value)
+                    }
                     options={categories}
                     required
                     error={errors.fit_position}
@@ -321,7 +369,9 @@ const AddProductPage = () => {
                   <FormRadioGroup
                     label="Category"
                     value={formData.category}
-                    onChange={(e) => handleInputChange('category', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("category", e.target.value)
+                    }
                     options={getCategoryOptions()}
                     required
                     error={errors.category}
@@ -332,7 +382,9 @@ const AddProductPage = () => {
                   <FormRadioGroup
                     label="Sub-Category"
                     value={formData.subcategory}
-                    onChange={(e) => handleInputChange('subcategory', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("subcategory", e.target.value)
+                    }
                     options={getSubcategoryOptions()}
                   />
                 )}
@@ -342,7 +394,9 @@ const AddProductPage = () => {
                     <FormRadioGroup
                       label="Performance Category"
                       value={formData.category}
-                      onChange={(e) => handleInputChange('category', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("category", e.target.value)
+                      }
                       options={performanceCategories}
                       required
                       error={errors.category}
@@ -352,7 +406,9 @@ const AddProductPage = () => {
                       <FormRadioGroup
                         label="Performance Subcategory"
                         value={formData.subcategory}
-                        onChange={(e) => handleInputChange('subcategory', e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("subcategory", e.target.value)
+                        }
                         options={getPerformanceSubcategoryOptions()}
                       />
                     )}
@@ -361,43 +417,51 @@ const AddProductPage = () => {
                       <FormRadioGroup
                         label="Performance Final Category"
                         value={formData.final_subcategory}
-                        onChange={(e) => handleInputChange('final_subcategory', e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("final_subcategory", e.target.value)
+                        }
                         options={getPerformanceFinalCategoryOptions()}
                       />
                     )}
                   </>
                 )}
 
-                {formData.category === 'Wheel' && !formData.performance_part && (
-                  <FormRadioGroup
-                    label="Category Brand"
-                    value={formData.category_brand}
-                    onChange={(e) => handleInputChange('category_brand', e.target.value)}
-                    options={[
-                      { value: 'Kansei', label: 'Kansei' },
-                      { value: 'Enkei', label: 'Enkei' },
-                      { value: 'Advan Racing', label: 'Advan Racing' },
-                      { value: 'Bc Forged', label: 'Bc Forged' },
-                      { value: 'Volk Racing', label: 'Volk Racing' },
-                      { value: 'FR1', label: 'FR1' }
-                    ]}
-                  />
-                )}
+                {formData.category === "Wheel" &&
+                  !formData.performance_part && (
+                    <FormRadioGroup
+                      label="Category Brand"
+                      value={formData.category_brand}
+                      onChange={(e) =>
+                        handleInputChange("category_brand", e.target.value)
+                      }
+                      options={[
+                        { value: "Kansei", label: "Kansei" },
+                        { value: "Enkei", label: "Enkei" },
+                        { value: "Advan Racing", label: "Advan Racing" },
+                        { value: "Bc Forged", label: "Bc Forged" },
+                        { value: "Volk Racing", label: "Volk Racing" },
+                        { value: "FR1", label: "FR1" },
+                      ]}
+                    />
+                  )}
 
-                {formData.category === 'Wheel' && !formData.performance_part && (
-                  <FormInput
-                    label="Wheel Size"
-                    value={formData.wheel_size}
-                    onChange={(e) => handleInputChange('wheel_size', e.target.value)}
-                    placeholder="e.g., 18x8.5"
-                  />
-                )}
+                {formData.category === "Wheel" &&
+                  !formData.performance_part && (
+                    <FormInput
+                      label="Wheel Size"
+                      value={formData.wheel_size}
+                      onChange={(e) =>
+                        handleInputChange("wheel_size", e.target.value)
+                      }
+                      placeholder="e.g., 18x8.5"
+                    />
+                  )}
 
-                {formData.category === 'Exhaust' && (
+                {formData.category === "Exhaust" && (
                   <FormInput
                     label="YouTube Video ID"
                     value={formData.video}
-                    onChange={(e) => handleInputChange('video', e.target.value)}
+                    onChange={(e) => handleInputChange("video", e.target.value)}
                     placeholder="Enter YouTube video ID"
                   />
                 )}
@@ -405,21 +469,21 @@ const AddProductPage = () => {
                 <FormTextEditor
                   label="Description"
                   value={formData.description}
-                  onChange={(value) => handleInputChange('description', value)}
+                  onChange={(value) => handleInputChange("description", value)}
                   placeholder="Enter product description..."
                 />
 
                 <FormTextEditor
                   label="Features"
                   value={formData.features}
-                  onChange={(value) => handleInputChange('features', value)}
+                  onChange={(value) => handleInputChange("features", value)}
                   placeholder="Enter product features..."
                 />
 
                 <FormTextEditor
                   label="Fitment"
                   value={formData.fitment}
-                  onChange={(value) => handleInputChange('fitment', value)}
+                  onChange={(value) => handleInputChange("fitment", value)}
                   placeholder="Enter fitment information..."
                 />
               </div>
@@ -439,7 +503,9 @@ const AddProductPage = () => {
                 disabled={addProductMutation.isPending}
                 className="px-6 py-2 text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {addProductMutation.isPending ? 'Adding Product...' : 'Add Product'}
+                {addProductMutation.isPending
+                  ? "Adding Product..."
+                  : "Add Product"}
               </button>
             </div>
           </div>
@@ -459,4 +525,4 @@ const AddProductPage = () => {
   );
 };
 
-export default AddProductPage; 
+export default AddProductPage;

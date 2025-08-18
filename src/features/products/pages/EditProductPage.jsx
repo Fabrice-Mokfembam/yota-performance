@@ -1,33 +1,33 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useProduct, useUpdateProduct, useUploadImages } from '../hooks/useProducts';
-import FormInput from '../components/FormInput';
-import FormRadioGroup from '../components/FormRadioGroup';
-import FormTextEditor from '../components/FormTextEditor';
-import ImageUpload from '../components/ImageUpload';
-import ProductPreview from '../components/ProductPreview';
-import { toast } from 'react-toastify';
-import { 
-  ArrowLeft, 
-  Loader2, 
-  AlertCircle 
-} from 'lucide-react';
-import { 
-  categories, 
-  carModels, 
-  performanceCategories, 
-  performanceSubcategories, 
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  useProduct,
+  useUpdateProduct,
+  useUploadImages,
+} from "../hooks/useProducts";
+import FormInput from "../components/FormInput";
+import FormRadioGroup from "../components/FormRadioGroup";
+import FormTextEditor from "../components/FormTextEditor";
+import ImageUpload from "../components/ImageUpload";
+import ProductPreview from "../components/ProductPreview";
+import { toast } from "react-toastify";
+import { ArrowLeft, Loader2, AlertCircle } from "lucide-react";
+import {
+  categories,
+  carModels,
+  performanceCategories,
+  performanceSubcategories,
   performanceFinalCategories,
   ExhaustSubCategory,
-  SuspensionPartsSubCategory
-} from '../../../data';
-import { 
-  itemsOther, 
-  itemsInterior, 
-  itemsExterior, 
-  itemsLighting, 
-  itemsBodykits 
-} from '../../../data';
+  SuspensionPartsSubCategory,
+} from "../../../data";
+import {
+  itemsOther,
+  itemsInterior,
+  itemsExterior,
+  itemsLighting,
+  itemsBodykits,
+} from "../../../data";
 
 const EditProductPage = () => {
   const { id } = useParams();
@@ -37,71 +37,93 @@ const EditProductPage = () => {
   const uploadImagesMutation = useUploadImages();
 
   const [formData, setFormData] = useState({
-    product_name: '',
-    price: '',
-    quantity_left: '',
-    car_brand: '',
-    car_model: '',
-    make_material: '',
+    product_name: "",
+    price: "",
+    quantity_left: "",
+    car_brand: "",
+    car_model: "",
+    make_material: "",
     hot_product: false,
     performance_part: false,
-    fit_position: '',
-    category: '',
-    subcategory: '',
-    final_subcategory: '',
-    category_brand: '',
-    wheel_size: '',
-    description: '',
-    features: '',
-    fitment: '',
-    video: '',
-    images: []
+    fit_position: "",
+    category: "",
+    subcategory: "",
+    final_subcategory: "",
+    category_brand: "",
+    wheel_size: "",
+    description: "",
+    features: "",
+    fitment: "",
+    video: "",
+    images: [],
   });
 
   const [errors, setErrors] = useState({});
   const [showPreview, setShowPreview] = useState(false);
 
+  // keep old string images + extract .name from new ones
+  const IMAGE_BASE = "http://ypsimages.yotaperformanceshop.com/";
+
+  const normalizeImageNames = (images) => {
+    return images
+      .map((img) => {
+        if (typeof img === "string") {
+          // strip domain prefix if present
+          return img.startsWith(IMAGE_BASE) ? img.replace(IMAGE_BASE, "") : img;
+        }
+        return img?.name; // new uploaded file objects
+      })
+      .filter(Boolean);
+  };
+
+  const sanitizeNumber = (v) => {
+    const n = Number.parseFloat(v);
+    return Number.isFinite(n) ? n : 0;
+  };
+
   // Populate form data when product data is available
   useEffect(() => {
     if (product) {
       setFormData({
-        product_name: product.product_name || '',
-        price: product.price?.toString() || '',
-        quantity_left: product.quantity_left?.toString() || '',
-        car_brand: product.car_brand || '',
-        car_model: product.car_model || '',
-        make_material: product.make_material || '',
+        product_name: product.product_name || "",
+        price: product.price?.toString() || "",
+        quantity_left: product.quantity_left?.toString() || "",
+        car_brand: product.car_brand || "",
+        car_model: product.car_model || "",
+        make_material: product.make_material || "",
         hot_product: product.hot_product || false,
         performance_part: product.performance_part || false,
-        fit_position: product.fit_position || '',
-        category: product.category || '',
-        subcategory: product.subcategory || '',
-        final_subcategory: product.final_subcategory || '',
-        category_brand: product.category_brand || '',
-        wheel_size: product.wheel_size || '',
-        description: product.description || '',
-        features: product.features || '',
-        fitment: product.fitment || '',
-        video: product.video || '',
-        images: product.images || []
+        fit_position: product.fit_position || "",
+        category: product.category || "",
+        subcategory: product.subcategory || "",
+        final_subcategory: product.final_subcategory || "",
+        category_brand: product.category_brand || "",
+        wheel_size: product.wheel_size || "",
+        description: product.description || "",
+        features: product.features || "",
+        fitment: product.fitment || "",
+        video: product.video || "",
+        images: product.images || [],
       });
     }
   }, [product]);
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    if (errors[field]) setErrors(prev => ({ ...prev, [field]: '' }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
   const handleImagesChange = (images) => {
-    setFormData(prev => ({ ...prev, images }));
+    setFormData((prev) => ({ ...prev, images }));
   };
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.product_name) newErrors.product_name = 'Product name is required';
-    if (!formData.price) newErrors.price = 'Price is required';
-    if (formData.images.length === 0) newErrors.images = 'At least one image is required';
+    if (!formData.product_name)
+      newErrors.product_name = "Product name is required";
+    if (!formData.price) newErrors.price = "Price is required";
+    if (formData.images.length === 0)
+      newErrors.images = "At least one image is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -110,68 +132,70 @@ const EditProductPage = () => {
   const handleSubmit = () => {
     if (!validateForm()) return;
 
-    // Upload new images first if any
-    const newImages = formData.images.filter(img => img.file);
+    const newImages = formData.images.filter((img) => img.file);
 
     if (newImages.length > 0) {
       const formDataImages = new FormData();
-      newImages.forEach(image => {
-        formDataImages.append('imageFiles[]', image.file);
+      newImages.forEach((image) => {
+        formDataImages.append("imageFiles[]", image.file);
       });
 
-      // Upload images mutation with callbacks
       uploadImagesMutation.mutate(formDataImages, {
-        onSuccess: (uploadResult) => {
-          console.log('Upload result:', uploadResult);
-
-          // Prepare product data for update after successful upload
+        onSuccess: () => {
           const productData = {
             ...formData,
-            price: Number.parseFloat(formData.price),
-            quantity_left: Number.parseFloat(formData.quantity_left),
-            images: formData.images.map(img => img.name),
+            price: sanitizeNumber(formData.price),
+            quantity_left: sanitizeNumber(formData.quantity_left),
+            images: normalizeImageNames(formData.images), // keep both old + new
             rating: product?.rating || 0,
           };
 
-          console.log('productt to be updated',{ id, data: productData })
+          console.log("Updating with images:", productData.images);
 
-          // Update product mutation with callbacks
-          updateProductMutation.mutate({ id, data: productData }, {
-            onSuccess: () => {
-              toast.success('Product updated successfully!');
-              navigate(`/products/detail/${id}`);
-            },
-            onError: (error) => {
-              console.error('Error updating product:', error);
-              toast.error('Failed to update product. Please try again.');
+          updateProductMutation.mutate(
+            { id, data: productData },
+            {
+              onSuccess: () => {
+                toast.success("Product updated successfully!");
+                window.location.href=`/products/detail/${id}`;
+                window.scrollTo(0, 0);
+              },
+              onError: (error) => {
+                console.error("Error updating product:", error);
+                toast.error("Failed to update product. Please try again.");
+              },
             }
-          });
+          );
         },
         onError: (error) => {
-          console.error('Error uploading images:', error);
-          toast.error('Failed to upload images. Please try again.');
-        }
+          console.error("Error uploading images:", error);
+          toast.error("Failed to upload images. Please try again.");
+        },
       });
     } else {
-      // No images to upload, just update product directly
       const productData = {
         ...formData,
-        price: Number.parseFloat(formData.price),
-        quantity_left: Number.parseFloat(formData.quantity_left),
-        images: formData.images.map(img => img.name),
+        price: sanitizeNumber(formData.price),
+        quantity_left: sanitizeNumber(formData.quantity_left),
+        images: normalizeImageNames(formData.images),
         rating: product?.rating || 0,
       };
 
-      updateProductMutation.mutate({ id, data: productData }, {
-        onSuccess: () => {
-          toast.success('Product updated successfully!');
-          navigate(`/products/detail/${id}`);
-        },
-        onError: (error) => {
-          console.error('Error updating product:', error);
-          toast.error('Failed to update product. Please try again.');
+      console.log("Updating with images:", productData.images);
+
+      updateProductMutation.mutate(
+        { id, data: productData },
+        {
+          onSuccess: () => {
+            toast.success("Product updated successfully!");
+            navigate(`/products/detail/${id}`);
+          },
+          onError: (error) => {
+            console.error("Error updating product:", error);
+            toast.error("Failed to update product. Please try again.");
+          },
         }
-      });
+      );
     }
   };
 
@@ -182,18 +206,40 @@ const EditProductPage = () => {
   const getCategoryOptions = () => {
     if (!formData.fit_position) return [];
     switch (formData.fit_position) {
-      case 'other': return itemsOther.map(item => ({ value: item.text, label: item.text }));
-      case 'interior': return itemsInterior.map(item => ({ value: item.text, label: item.text }));
-      case 'exterior': return itemsExterior.map(item => ({ value: item.text, label: item.text }));
-      case 'body kit': return itemsBodykits.map(item => ({ value: item.text, label: item.text }));
-      case 'lighting': return itemsLighting.map(item => ({ value: item.text, label: item.text }));
-      default: return [];
+      case "other":
+        return itemsOther.map((item) => ({
+          value: item.text,
+          label: item.text,
+        }));
+      case "interior":
+        return itemsInterior.map((item) => ({
+          value: item.text,
+          label: item.text,
+        }));
+      case "exterior":
+        return itemsExterior.map((item) => ({
+          value: item.text,
+          label: item.text,
+        }));
+      case "body kit":
+        return itemsBodykits.map((item) => ({
+          value: item.text,
+          label: item.text,
+        }));
+      case "lighting":
+        return itemsLighting.map((item) => ({
+          value: item.text,
+          label: item.text,
+        }));
+      default:
+        return [];
     }
   };
 
   const getSubcategoryOptions = () => {
-    if (formData.category === 'Exhaust') return ExhaustSubCategory;
-    if (formData.category === 'Suspension Parts') return SuspensionPartsSubCategory;
+    if (formData.category === "Exhaust") return ExhaustSubCategory;
+    if (formData.category === "Suspension Parts")
+      return SuspensionPartsSubCategory;
     return [];
   };
 
@@ -206,11 +252,15 @@ const EditProductPage = () => {
   };
 
   const getFilteredCarModels = () => {
-    return carModels.filter(carModel => {
-      if (formData.car_brand === 'Toyota Corolla') return carModel.label.includes('Corolla');
-      if (formData.car_brand === 'Toyota Camry') return carModel.label.includes('Camry');
-      if (formData.car_brand === 'Toyota GR86') return carModel.label.includes('GR86');
-      if (formData.car_brand === 'Toyota Supra') return carModel.label.includes('SUPRA');
+    return carModels.filter((carModel) => {
+      if (formData.car_brand === "Toyota Corolla")
+        return carModel.label.includes("Corolla");
+      if (formData.car_brand === "Toyota Camry")
+        return carModel.label.includes("Camry");
+      if (formData.car_brand === "Toyota GR86")
+        return carModel.label.includes("GR86");
+      if (formData.car_brand === "Toyota Supra")
+        return carModel.label.includes("SUPRA");
       return true;
     });
   };
@@ -231,9 +281,11 @@ const EditProductPage = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <AlertCircle className="h-8 w-8 text-red-600 mx-auto mb-4" />
-          <p className="text-gray-600">Error loading product. Please try again.</p>
+          <p className="text-gray-600">
+            Error loading product. Please try again.
+          </p>
           <button
-            onClick={() => navigate('/products/list')}
+            onClick={() => navigate("/products/list")}
             className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
             Back to Products
@@ -250,7 +302,7 @@ const EditProductPage = () => {
           <AlertCircle className="h-8 w-8 text-yellow-600 mx-auto mb-4" />
           <p className="text-gray-600">Product not found</p>
           <button
-            onClick={() => navigate('/products/list')}
+            onClick={() => navigate("/products/list")}
             className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
             Back to Products
@@ -276,8 +328,12 @@ const EditProductPage = () => {
                   <ArrowLeft className="h-5 w-5" />
                 </button>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">Edit Product</h1>
-                  <p className="mt-1 text-sm text-gray-600">Update the product details below</p>
+                  <h1 className="text-2xl font-bold text-gray-900">
+                    Edit Product
+                  </h1>
+                  <p className="mt-1 text-sm text-gray-600">
+                    Update the product details below
+                  </p>
                 </div>
               </div>
             </div>
@@ -289,19 +345,30 @@ const EditProductPage = () => {
               <div className="space-y-6">
                 <div className="bg-blue-50 p-4 rounded-lg">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-blue-900">Performance Part</span>
+                    <span className="text-sm font-medium text-blue-900">
+                      Performance Part
+                    </span>
                     <button
                       type="button"
-                      onClick={() => handleInputChange('performance_part', !formData.performance_part)}
+                      onClick={() =>
+                        handleInputChange(
+                          "performance_part",
+                          !formData.performance_part
+                        )
+                      }
                       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                        formData.performance_part ? 'bg-blue-600' : 'bg-gray-200'
+                        formData.performance_part
+                          ? "bg-blue-600"
+                          : "bg-gray-200"
                       }`}
                       aria-pressed={formData.performance_part}
                       aria-label="Toggle Performance Part"
                     >
                       <span
                         className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                          formData.performance_part ? 'translate-x-6' : 'translate-x-1'
+                          formData.performance_part
+                            ? "translate-x-6"
+                            : "translate-x-1"
                         }`}
                       />
                     </button>
@@ -319,7 +386,9 @@ const EditProductPage = () => {
                 <FormInput
                   label="Product Name"
                   value={formData.product_name}
-                  onChange={(e) => handleInputChange('product_name', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("product_name", e.target.value)
+                  }
                   placeholder="Enter product name"
                   required
                   error={errors.product_name}
@@ -329,7 +398,7 @@ const EditProductPage = () => {
                   label="Price ($)"
                   type="number"
                   value={formData.price}
-                  onChange={(e) => handleInputChange('price', e.target.value)}
+                  onChange={(e) => handleInputChange("price", e.target.value)}
                   placeholder="0.00"
                   required
                   error={errors.price}
@@ -339,7 +408,9 @@ const EditProductPage = () => {
                   label="Quantity Available"
                   type="number"
                   value={formData.quantity_left}
-                  onChange={(e) => handleInputChange('quantity_left', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("quantity_left", e.target.value)
+                  }
                   placeholder="0"
                   required
                   error={errors.quantity_left}
@@ -348,12 +419,14 @@ const EditProductPage = () => {
                 <FormRadioGroup
                   label="Car Brand"
                   value={formData.car_brand}
-                  onChange={(e) => handleInputChange('car_brand', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("car_brand", e.target.value)
+                  }
                   options={[
-                    { value: 'Toyota Corolla', label: 'Toyota Corolla' },
-                    { value: 'Toyota Camry', label: 'Toyota Camry' },
-                    { value: 'Toyota GR86', label: 'Toyota GR86' },
-                    { value: 'Toyota Supra', label: 'Toyota Supra' }
+                    { value: "Toyota Corolla", label: "Toyota Corolla" },
+                    { value: "Toyota Camry", label: "Toyota Camry" },
+                    { value: "Toyota GR86", label: "Toyota GR86" },
+                    { value: "Toyota Supra", label: "Toyota Supra" },
                   ]}
                   required
                   error={errors.car_brand}
@@ -362,7 +435,9 @@ const EditProductPage = () => {
                 <FormRadioGroup
                   label="Car Model"
                   value={formData.car_model}
-                  onChange={(e) => handleInputChange('car_model', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("car_model", e.target.value)
+                  }
                   options={getFilteredCarModels()}
                   required
                   error={errors.car_model}
@@ -371,20 +446,24 @@ const EditProductPage = () => {
                 <FormRadioGroup
                   label="Hot Product"
                   value={formData.hot_product}
-                  onChange={(e) => handleInputChange('hot_product', e.target.value === 'true')}
+                  onChange={(e) =>
+                    handleInputChange("hot_product", e.target.value === "true")
+                  }
                   options={[
-                    { value: true, label: 'Yes' },
-                    { value: false, label: 'No' }
+                    { value: true, label: "Yes" },
+                    { value: false, label: "No" },
                   ]}
                 />
 
                 <FormRadioGroup
                   label="Make Material"
                   value={formData.make_material}
-                  onChange={(e) => handleInputChange('make_material', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("make_material", e.target.value)
+                  }
                   options={[
-                    { value: 'carbon fiber', label: 'Carbon Fiber' },
-                    { value: 'Other', label: 'Other' }
+                    { value: "carbon fiber", label: "Carbon Fiber" },
+                    { value: "Other", label: "Other" },
                   ]}
                 />
               </div>
@@ -395,7 +474,9 @@ const EditProductPage = () => {
                   <FormRadioGroup
                     label="Category Type"
                     value={formData.fit_position}
-                    onChange={(e) => handleInputChange('fit_position', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("fit_position", e.target.value)
+                    }
                     options={categories}
                     required
                     error={errors.fit_position}
@@ -406,7 +487,9 @@ const EditProductPage = () => {
                   <FormRadioGroup
                     label="Category"
                     value={formData.category}
-                    onChange={(e) => handleInputChange('category', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("category", e.target.value)
+                    }
                     options={getCategoryOptions()}
                     required
                     error={errors.category}
@@ -417,7 +500,9 @@ const EditProductPage = () => {
                   <FormRadioGroup
                     label="Sub-Category"
                     value={formData.subcategory}
-                    onChange={(e) => handleInputChange('subcategory', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("subcategory", e.target.value)
+                    }
                     options={getSubcategoryOptions()}
                   />
                 )}
@@ -427,7 +512,9 @@ const EditProductPage = () => {
                     <FormRadioGroup
                       label="Performance Category"
                       value={formData.category}
-                      onChange={(e) => handleInputChange('category', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("category", e.target.value)
+                      }
                       options={performanceCategories}
                       required
                       error={errors.category}
@@ -437,7 +524,9 @@ const EditProductPage = () => {
                       <FormRadioGroup
                         label="Performance Subcategory"
                         value={formData.subcategory}
-                        onChange={(e) => handleInputChange('subcategory', e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("subcategory", e.target.value)
+                        }
                         options={getPerformanceSubcategoryOptions()}
                       />
                     )}
@@ -446,43 +535,50 @@ const EditProductPage = () => {
                       <FormRadioGroup
                         label="Performance Final Category"
                         value={formData.final_subcategory}
-                        onChange={(e) => handleInputChange('final_subcategory', e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("final_subcategory", e.target.value)
+                        }
                         options={getPerformanceFinalCategoryOptions()}
                       />
                     )}
                   </>
                 )}
 
-                {formData.category === 'Wheel' && !formData.performance_part && (
-                  <>
-                    <FormRadioGroup
-                      label="Category Brand"
-                      value={formData.category_brand}
-                      onChange={(e) => handleInputChange('category_brand', e.target.value)}
-                      options={[
-                        { value: 'Kansei', label: 'Kansei' },
-                        { value: 'Enkei', label: 'Enkei' },
-                        { value: 'Advan Racing', label: 'Advan Racing' },
-                        { value: 'Bc Forged', label: 'Bc Forged' },
-                        { value: 'Volk Racing', label: 'Volk Racing' },
-                        { value: 'FR1', label: 'FR1' }
-                      ]}
-                    />
+                {formData.category === "Wheel" &&
+                  !formData.performance_part && (
+                    <>
+                      <FormRadioGroup
+                        label="Category Brand"
+                        value={formData.category_brand}
+                        onChange={(e) =>
+                          handleInputChange("category_brand", e.target.value)
+                        }
+                        options={[
+                          { value: "Kansei", label: "Kansei" },
+                          { value: "Enkei", label: "Enkei" },
+                          { value: "Advan Racing", label: "Advan Racing" },
+                          { value: "Bc Forged", label: "Bc Forged" },
+                          { value: "Volk Racing", label: "Volk Racing" },
+                          { value: "FR1", label: "FR1" },
+                        ]}
+                      />
 
-                    <FormInput
-                      label="Wheel Size"
-                      value={formData.wheel_size}
-                      onChange={(e) => handleInputChange('wheel_size', e.target.value)}
-                      placeholder="e.g., 18x8.5"
-                    />
-                  </>
-                )}
+                      <FormInput
+                        label="Wheel Size"
+                        value={formData.wheel_size}
+                        onChange={(e) =>
+                          handleInputChange("wheel_size", e.target.value)
+                        }
+                        placeholder="e.g., 18x8.5"
+                      />
+                    </>
+                  )}
 
-                {formData.category === 'Exhaust' && (
+                {formData.category === "Exhaust" && (
                   <FormInput
                     label="YouTube Video ID"
                     value={formData.video}
-                    onChange={(e) => handleInputChange('video', e.target.value)}
+                    onChange={(e) => handleInputChange("video", e.target.value)}
                     placeholder="Enter YouTube video ID"
                   />
                 )}
@@ -490,21 +586,21 @@ const EditProductPage = () => {
                 <FormTextEditor
                   label="Description"
                   value={formData.description}
-                  onChange={(value) => handleInputChange('description', value)}
+                  onChange={(value) => handleInputChange("description", value)}
                   placeholder="Enter product description..."
                 />
 
                 <FormTextEditor
                   label="Features"
                   value={formData.features}
-                  onChange={(value) => handleInputChange('features', value)}
+                  onChange={(value) => handleInputChange("features", value)}
                   placeholder="Enter product features..."
                 />
 
                 <FormTextEditor
                   label="Fitment"
                   value={formData.fitment}
-                  onChange={(value) => handleInputChange('fitment', value)}
+                  onChange={(value) => handleInputChange("fitment", value)}
                   placeholder="Enter fitment information..."
                 />
               </div>
@@ -530,7 +626,7 @@ const EditProductPage = () => {
                     Updating Product...
                   </>
                 ) : (
-                  'Update Product'
+                  "Update Product"
                 )}
               </button>
             </div>
