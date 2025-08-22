@@ -146,7 +146,7 @@ const EditProductPage = () => {
             ...formData,
             price: sanitizeNumber(formData.price),
             quantity_left: sanitizeNumber(formData.quantity_left),
-            images: normalizeImageNames(formData.images), // keep both old + new
+            images: normalizeImageNames(formData.images), 
             rating: product?.rating || 0,
           };
 

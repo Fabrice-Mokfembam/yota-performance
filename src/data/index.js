@@ -33,34 +33,38 @@ export const SuspensionPartsSubCategory = [
     
   ];
   
- export const itemsInterior = [
-    { text: "Shift knob & pedals", selected: false },
-    { text: "Steering wheel & Airbags", selected: false },
-    { text: "Seats & Covers", selected: false },
-    { text: "Dashboard panel", selected: false },
-    { text: "Center console", selected: false },
-    { text: "Floor mats", selected: false },
-    { text: "Door & trim panels", selected: false },
-    { text: "Lighting kit", selected: false },
-  ];
-  
- export  const itemsLighting = [
-    { text: "Head Lights", selected: false },
-    { text: "Tail Lights", selected: false },
-  ];
-  
- export const itemsExterior = [
-    { text: "Front Lip", selected: false },
-    { text: "Side skirt", selected: false },
-    { text: "Rear diffuser", selected: false },
-    { text: "Side mirrors & covers", selected: false },
-    { text: "Front grille", selected: false },
-    { text: "Bumper grille", selected: false },
-    { text: "Covers", selected: false },
-    { text: "Rear Spoilers", selected: false },
-  ];
-  
- export  const categories = [
+export const itemsInterior = [
+  { text: "Shift knob & pedals", selected: false },
+  { text: "Steering wheel & Airbags", selected: false },
+  { text: "Seats & Covers", selected: false },
+  { text: "Dashboard panel", selected: false },
+  { text: "Center console", selected: false },
+  { text: "Floor mats", selected: false },
+  { text: "Door & trim panels", selected: false },
+  { text: "Lighting kit", selected: false },
+  { text: "Roll Bars", selected: false }, // Added Roll Bars
+];
+
+export const itemsLighting = [
+  { text: "Head Lights", selected: false },
+  { text: "Tail Lights", selected: false },
+  { text: "Fog Lights", selected: false }, // Added Fog Lights
+];
+
+export const itemsExterior = [
+  { text: "Front Lip", selected: false },
+  { text: "Side skirt", selected: false },
+  { text: "Rear diffuser", selected: false },
+  { text: "Side mirrors & covers", selected: false },
+  { text: "Front grille", selected: false },
+  { text: "Bumper grille", selected: false },
+  { text: "Covers", selected: false },
+  { text: "Rear Spoilers", selected: false },
+  { text: "Roof Tops", selected: false }, // Added Roof Tops
+  { text: "License Plates", selected: false }, // Added License Plates
+  { text: "Doors", selected: false }, // Added Doors
+];
+export const categories = [
     { value: "lighting", label: "Lighting" },
     { value: "exterior", label: "Exterior" },
     { value: "interior", label: "Interior" },
