@@ -27,6 +27,7 @@ import {
 const AddProductPage = () => {
   const [formData, setFormData] = useState({
     product_name: "",
+    sku: "",
     price: "",
     quantity_left: "",
     car_brand: "",
@@ -44,6 +45,7 @@ const AddProductPage = () => {
     features: "",
     fitment: "",
     video: "",
+    shipment: "1", // Default to 1 Business Day
     images: [],
   });
 
@@ -73,6 +75,7 @@ const AddProductPage = () => {
     if (!formData.price) newErrors.price = "Price is required";
     if (formData.images.length === 0)
       newErrors.images = "At least one image is required";
+    if (!formData.sku) newErrors.sku = "SKU is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -110,6 +113,7 @@ const AddProductPage = () => {
       // Reset form
       setFormData({
         product_name: "",
+        sku: "",
         price: "",
         quantity_left: "",
         car_brand: "",
@@ -127,6 +131,7 @@ const AddProductPage = () => {
         features: "",
         fitment: "",
         video: "",
+        shipment: "1",
         images: [],
       });
 
@@ -277,6 +282,15 @@ const AddProductPage = () => {
                 />
 
                 <FormInput
+                  label="SKU"
+                  value={formData.sku}
+                  onChange={(e) => handleInputChange("sku", e.target.value)}
+                  placeholder="Enter product SKU"
+                  required
+                  error={errors.sku}
+                />
+
+                <FormInput
                   label="Price ($)"
                   type="number"
                   value={formData.price}
@@ -297,6 +311,28 @@ const AddProductPage = () => {
                   required
                   error={errors.quantity_left}
                 />
+
+                {formData.quantity_left === "-1" && (
+                  <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                    <h3 className="text-sm font-medium text-yellow-800 mb-2">
+                      Special Order Shipping Information
+                    </h3>
+                    <FormRadioGroup
+                      label="Shipping Time"
+                      value={formData.shipment}
+                      onChange={(e) =>
+                        handleInputChange("shipment", e.target.value)
+                      }
+                      options={[
+                        { value: "5-7", label: "Ships within 5-7 Business Days" },
+                        { value: "7-10", label: "Ships within 7-10 Business Days" },
+                        { value: "14-21", label: "Ships within 2-3 weeks" },
+                        { value: "30", label: "Ships within 1 month (ETA Time is 1 month)" },
+                      ]}
+                      required
+                    />
+                  </div>
+                )}
 
                 <FormRadioGroup
                   label="Car Brand"
@@ -457,14 +493,13 @@ const AddProductPage = () => {
                     />
                   )}
 
-                {formData.category === "Exhaust" && (
-                  <FormInput
-                    label="YouTube Video ID"
-                    value={formData.video}
-                    onChange={(e) => handleInputChange("video", e.target.value)}
-                    placeholder="Enter YouTube video ID"
-                  />
-                )}
+                {/* YouTube Video ID for all products */}
+                <FormInput
+                  label="YouTube Video ID"
+                  value={formData.video}
+                  onChange={(e) => handleInputChange("video", e.target.value)}
+                  placeholder="Enter YouTube video ID"
+                />
 
                 <FormTextEditor
                   label="Description"

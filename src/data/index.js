@@ -56,7 +56,7 @@ export const itemsExterior = [
   { text: "Side skirt", selected: false },
   { text: "Rear diffuser", selected: false },
   { text: "Side mirrors & covers", selected: false },
-  { text: "Front grille", selected: false },
+  { text: "Front Grille", selected: false },
   { text: "Bumper grille", selected: false },
   { text: "Covers", selected: false },
   { text: "Rear Spoilers", selected: false },

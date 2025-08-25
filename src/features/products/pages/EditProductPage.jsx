@@ -38,6 +38,7 @@ const EditProductPage = () => {
 
   const [formData, setFormData] = useState({
     product_name: "",
+    sku: "",
     price: "",
     quantity_left: "",
     car_brand: "",
@@ -55,6 +56,7 @@ const EditProductPage = () => {
     features: "",
     fitment: "",
     video: "",
+    shipment: "1", // Default to 1 Business Day
     images: [],
   });
 
@@ -86,6 +88,7 @@ const EditProductPage = () => {
     if (product) {
       setFormData({
         product_name: product.product_name || "",
+        sku: product.sku || "",
         price: product.price?.toString() || "",
         quantity_left: product.quantity_left?.toString() || "",
         car_brand: product.car_brand || "",
@@ -103,6 +106,7 @@ const EditProductPage = () => {
         features: product.features || "",
         fitment: product.fitment || "",
         video: product.video || "",
+        shipment: product.shipment || "1",
         images: product.images || [],
       });
     }
@@ -124,6 +128,7 @@ const EditProductPage = () => {
     if (!formData.price) newErrors.price = "Price is required";
     if (formData.images.length === 0)
       newErrors.images = "At least one image is required";
+    if (!formData.sku) newErrors.sku = "SKU is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -395,6 +400,15 @@ const EditProductPage = () => {
                 />
 
                 <FormInput
+                  label="SKU"
+                  value={formData.sku}
+                  onChange={(e) => handleInputChange("sku", e.target.value)}
+                  placeholder="Enter product SKU"
+                  required
+                  error={errors.sku}
+                />
+
+                <FormInput
                   label="Price ($)"
                   type="number"
                   value={formData.price}
@@ -415,6 +429,28 @@ const EditProductPage = () => {
                   required
                   error={errors.quantity_left}
                 />
+
+                {formData.quantity_left === "-1" && (
+                  <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                    <h3 className="text-sm font-medium text-yellow-800 mb-2">
+                      Special Order Shipping Information
+                    </h3>
+                    <FormRadioGroup
+                      label="Shipping Time"
+                      value={formData.shipment}
+                      onChange={(e) =>
+                        handleInputChange("shipment", e.target.value)
+                      }
+                      options={[
+                        { value: "5-7", label: "Ships within 5-7 Business Days" },
+                        { value: "7-10", label: "Ships within 7-10 Business Days" },
+                        { value: "14-21", label: "Ships within 2-3 weeks" },
+                        { value: "30", label: "Ships within 1 month (ETA Time is 1 month)" },
+                      ]}
+                      required
+                    />
+                  </div>
+                )}
 
                 <FormRadioGroup
                   label="Car Brand"
@@ -574,14 +610,13 @@ const EditProductPage = () => {
                     </>
                   )}
 
-                {formData.category === "Exhaust" && (
-                  <FormInput
-                    label="YouTube Video ID"
-                    value={formData.video}
-                    onChange={(e) => handleInputChange("video", e.target.value)}
-                    placeholder="Enter YouTube video ID"
-                  />
-                )}
+                {/* YouTube Video ID for all products */}
+                <FormInput
+                  label="YouTube Video ID"
+                  value={formData.video}
+                  onChange={(e) => handleInputChange("video", e.target.value)}
+                  placeholder="Enter YouTube video ID"
+                />
 
                 <FormTextEditor
                   label="Description"
@@ -610,7 +645,7 @@ const EditProductPage = () => {
               <button
                 type="button"
                 onClick={handlePreview}
-                className="px-6 py-2 text-blue-600 bg-blue-50 border border-blue-600 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-6 py-2 text-blue-60 bg-blue-50 border border-blue-600 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 Preview Product
               </button>
