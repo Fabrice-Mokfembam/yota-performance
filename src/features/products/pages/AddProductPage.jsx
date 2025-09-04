@@ -106,7 +106,7 @@ const AddProductPage = () => {
         images: formData.images.map((img) => img.name),
         rating: 1,
       };
-
+       console.log(productData)
       // Add product
       await addProductMutation.mutateAsync(productData);
 
@@ -389,57 +389,7 @@ const AddProductPage = () => {
                     error={errors.fit_position}
                   />
                 )}
-                {formData.category === "Wheel" &&
-                  !formData.performance_part && (
-                    <FormInput
-                      label="Wheel Size"
-                      value={formData.wheel_size}
-                      onChange={(e) =>
-                        handleInputChange("wheel_size", e.target.value)
-                      }
-                      placeholder="e.g., 18x8.5"
-                    />
-                  )}
-
-                {/* YouTube Video ID for all products */}
-                <FormInput
-                  label="YouTube Video ID"
-                  value={formData.video}
-                  onChange={(e) => handleInputChange("video", e.target.value)}
-                  placeholder="Enter YouTube video ID"
-                />
-
-                <FormInput
-                  label="SKU"
-                  value={formData.sku}
-                  onChange={(e) => handleInputChange("sku", e.target.value)}
-                  placeholder="Enter product SKU"
-                  required
-                  error={errors.sku}
-                />
-
-                <FormTextEditor
-                  label="Fitment"
-                  value={formData.fitment}
-                  onChange={(value) => handleInputChange("fitment", value)}
-                  placeholder="Enter fitment information..."
-                />
-
-                <FormTextEditor
-                  label="Description"
-                  value={formData.description}
-                  onChange={(value) => handleInputChange("description", value)}
-                  placeholder="Enter product description..."
-                />
-
-                <FormTextEditor
-                  label="Features"
-                  value={formData.features}
-                  onChange={(value) => handleInputChange("features", value)}
-                  placeholder="Enter product features..."
-                />
-
-                {!formData.performance_part && formData.fit_position && (
+                   {!formData.performance_part && formData.fit_position && (
                   <FormRadioGroup
                     label="Category"
                     value={formData.category}
@@ -519,6 +469,57 @@ const AddProductPage = () => {
                     />
                   )}
 
+                {formData.category === "Wheel" &&
+                  !formData.performance_part && (
+                    <FormInput
+                      label="Wheel Size"
+                      value={formData.wheel_size}
+                      onChange={(e) =>
+                        handleInputChange("wheel_size", e.target.value)
+                      }
+                      placeholder="e.g., 18x8.5"
+                    />
+                  )}
+
+                {/* YouTube Video ID for all products */}
+                <FormInput
+                  label="YouTube Video ID"
+                  value={formData.video}
+                  onChange={(e) => handleInputChange("video", e.target.value)}
+                  placeholder="Enter YouTube video ID"
+                />
+
+                <FormInput
+                  label="SKU"
+                  value={formData.sku}
+                  onChange={(e) => handleInputChange("sku", e.target.value)}
+                  placeholder="Enter product SKU"
+                  required
+                  error={errors.sku}
+                />
+
+                <FormTextEditor
+                  label="Fitment"
+                  value={formData.fitment}
+                  onChange={(value) => handleInputChange("fitment", value)}
+                  placeholder="Enter fitment information..."
+                />
+
+                <FormTextEditor
+                  label="Description"
+                  value={formData.description}
+                  onChange={(value) => handleInputChange("description", value)}
+                  placeholder="Enter product description..."
+                />
+
+                <FormTextEditor
+                  label="Features"
+                  value={formData.features}
+                  onChange={(value) => handleInputChange("features", value)}
+                  placeholder="Enter product features..."
+                />
+
+             
                 
 
                 
