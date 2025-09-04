@@ -345,7 +345,7 @@ const EditProductPage = () => {
           </div>
 
           <div className="p-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 gap-8">
               {/* Left Column */}
               <div className="space-y-6">
                 <div className="bg-blue-50 p-4 rounded-lg">
@@ -380,14 +380,6 @@ const EditProductPage = () => {
                   </div>
                 </div>
 
-                <ImageUpload
-                  label="Product Images"
-                  images={formData.images}
-                  onImagesChange={handleImagesChange}
-                  required
-                  error={errors.images}
-                />
-
                 <FormInput
                   label="Product Name"
                   value={formData.product_name}
@@ -399,13 +391,12 @@ const EditProductPage = () => {
                   error={errors.product_name}
                 />
 
-                <FormInput
-                  label="SKU"
-                  value={formData.sku}
-                  onChange={(e) => handleInputChange("sku", e.target.value)}
-                  placeholder="Enter product SKU"
+                <ImageUpload
+                  label="Product Images"
+                  images={formData.images}
+                  onImagesChange={handleImagesChange}
                   required
-                  error={errors.sku}
+                  error={errors.images}
                 />
 
                 <FormInput
@@ -502,10 +493,150 @@ const EditProductPage = () => {
                     { value: "Other", label: "Other" },
                   ]}
                 />
+
+                {!formData.performance_part && (
+                  <FormRadioGroup
+                    label="Category Type"
+                    value={formData.fit_position}
+                    onChange={(e) =>
+                      handleInputChange("fit_position", e.target.value)
+                    }
+                    options={categories}
+                    required
+                    error={errors.fit_position}
+                  />
+                )}
+
+                {!formData.performance_part && formData.fit_position && (
+                  <FormRadioGroup
+                    label="Category"
+                    value={formData.category}
+                    onChange={(e) =>
+                      handleInputChange("category", e.target.value)
+                    }
+                    options={getCategoryOptions()}
+                    required
+                    error={errors.category}
+                  />
+                )}
+
+                {!formData.performance_part && formData.category && (
+                  <FormRadioGroup
+                    label="Sub-Category"
+                    value={formData.subcategory}
+                    onChange={(e) =>
+                      handleInputChange("subcategory", e.target.value)
+                    }
+                    options={getSubcategoryOptions()}
+                  />
+                )}
+
+                {formData.performance_part && (
+                  <>
+                    <FormRadioGroup
+                      label="Performance Category"
+                      value={formData.category}
+                      onChange={(e) =>
+                        handleInputChange("category", e.target.value)
+                      }
+                      options={performanceCategories}
+                      required
+                      error={errors.category}
+                    />
+
+                    {formData.category && (
+                      <FormRadioGroup
+                        label="Performance Subcategory"
+                        value={formData.subcategory}
+                        onChange={(e) =>
+                          handleInputChange("subcategory", e.target.value)
+                        }
+                        options={getPerformanceSubcategoryOptions()}
+                      />
+                    )}
+
+                    {formData.subcategory && (
+                      <FormRadioGroup
+                        label="Performance Final Category"
+                        value={formData.final_subcategory}
+                        onChange={(e) =>
+                          handleInputChange("final_subcategory", e.target.value)
+                        }
+                        options={getPerformanceFinalCategoryOptions()}
+                      />
+                    )}
+                  </>
+                )}
+
+                {formData.category === "Wheel" &&
+                  !formData.performance_part && (
+                    <>
+                      <FormRadioGroup
+                        label="Category Brand"
+                        value={formData.category_brand}
+                        onChange={(e) =>
+                          handleInputChange("category_brand", e.target.value)
+                        }
+                        options={[
+                          { value: "Kansei", label: "Kansei" },
+                          { value: "Enkei", label: "Enkei" },
+                          { value: "Advan Racing", label: "Advan Racing" },
+                          { value: "Bc Forged", label: "Bc Forged" },
+                          { value: "Volk Racing", label: "Volk Racing" },
+                          { value: "FR1", label: "FR1" },
+                        ]}
+                      />
+
+                      <FormInput
+                        label="Wheel Size"
+                        value={formData.wheel_size}
+                        onChange={(e) =>
+                          handleInputChange("wheel_size", e.target.value)
+                        }
+                        placeholder="e.g., 18x8.5"
+                      />
+                    </>
+                  )}
+
+                {/* YouTube Video ID for all products */}
+                <FormInput
+                  label="YouTube Video ID"
+                  value={formData.video}
+                  onChange={(e) => handleInputChange("video", e.target.value)}
+                  placeholder="Enter YouTube video ID"
+                />
+
+                <FormInput
+                  label="SKU"
+                  value={formData.sku}
+                  onChange={(e) => handleInputChange("sku", e.target.value)}
+                  placeholder="Enter product SKU"
+                  required
+                  error={errors.sku}
+                />
+
+                <FormTextEditor
+                  label="Fitment"
+                  value={formData.fitment}
+                  onChange={(value) => handleInputChange("fitment", value)}
+                  placeholder="Enter fitment information..."
+                />
+
+                <FormTextEditor
+                  label="Description"
+                  value={formData.description}
+                  onChange={(value) => handleInputChange("description", value)}
+                  placeholder="Enter product description..."
+                />
+
+                <FormTextEditor
+                  label="Features"
+                  value={formData.features}
+                  onChange={(value) => handleInputChange("features", value)}
+                  placeholder="Enter product features..."
+                />
               </div>
 
-              {/* Right Column */}
-              <div className="space-y-6">
                 {!formData.performance_part && (
                   <FormRadioGroup
                     label="Category Type"
@@ -638,7 +769,6 @@ const EditProductPage = () => {
                   onChange={(value) => handleInputChange("fitment", value)}
                   placeholder="Enter fitment information..."
                 />
-              </div>
             </div>
 
             <div className="mt-8 flex justify-end space-x-4">

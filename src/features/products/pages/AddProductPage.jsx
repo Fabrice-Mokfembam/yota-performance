@@ -229,8 +229,7 @@ const AddProductPage = () => {
           </div>
 
           <div className="p-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Left Column */}
+            <div className="grid grid-cols-1 gap-8">
               <div className="space-y-6">
                 <div className="bg-blue-50 p-4 rounded-lg">
                   <div className="flex items-center justify-between">
@@ -262,14 +261,6 @@ const AddProductPage = () => {
                   </div>
                 </div>
 
-                <ImageUpload
-                  label="Product Images"
-                  images={formData.images}
-                  onImagesChange={handleImagesChange}
-                  required
-                  error={errors.images}
-                />
-
                 <FormInput
                   label="Product Name"
                   value={formData.product_name}
@@ -281,13 +272,12 @@ const AddProductPage = () => {
                   error={errors.product_name}
                 />
 
-                <FormInput
-                  label="SKU"
-                  value={formData.sku}
-                  onChange={(e) => handleInputChange("sku", e.target.value)}
-                  placeholder="Enter product SKU"
+                <ImageUpload
+                  label="Product Images"
+                  images={formData.images}
+                  onImagesChange={handleImagesChange}
                   required
-                  error={errors.sku}
+                  error={errors.images}
                 />
 
                 <FormInput
@@ -386,7 +376,6 @@ const AddProductPage = () => {
                 />
               </div>
 
-              {/* Right Column */}
               <div className="space-y-6">
                 {!formData.performance_part && (
                   <FormRadioGroup
@@ -400,6 +389,55 @@ const AddProductPage = () => {
                     error={errors.fit_position}
                   />
                 )}
+                {formData.category === "Wheel" &&
+                  !formData.performance_part && (
+                    <FormInput
+                      label="Wheel Size"
+                      value={formData.wheel_size}
+                      onChange={(e) =>
+                        handleInputChange("wheel_size", e.target.value)
+                      }
+                      placeholder="e.g., 18x8.5"
+                    />
+                  )}
+
+                {/* YouTube Video ID for all products */}
+                <FormInput
+                  label="YouTube Video ID"
+                  value={formData.video}
+                  onChange={(e) => handleInputChange("video", e.target.value)}
+                  placeholder="Enter YouTube video ID"
+                />
+
+                <FormInput
+                  label="SKU"
+                  value={formData.sku}
+                  onChange={(e) => handleInputChange("sku", e.target.value)}
+                  placeholder="Enter product SKU"
+                  required
+                  error={errors.sku}
+                />
+
+                <FormTextEditor
+                  label="Fitment"
+                  value={formData.fitment}
+                  onChange={(value) => handleInputChange("fitment", value)}
+                  placeholder="Enter fitment information..."
+                />
+
+                <FormTextEditor
+                  label="Description"
+                  value={formData.description}
+                  onChange={(value) => handleInputChange("description", value)}
+                  placeholder="Enter product description..."
+                />
+
+                <FormTextEditor
+                  label="Features"
+                  value={formData.features}
+                  onChange={(value) => handleInputChange("features", value)}
+                  placeholder="Enter product features..."
+                />
 
                 {!formData.performance_part && formData.fit_position && (
                   <FormRadioGroup
@@ -481,46 +519,9 @@ const AddProductPage = () => {
                     />
                   )}
 
-                {formData.category === "Wheel" &&
-                  !formData.performance_part && (
-                    <FormInput
-                      label="Wheel Size"
-                      value={formData.wheel_size}
-                      onChange={(e) =>
-                        handleInputChange("wheel_size", e.target.value)
-                      }
-                      placeholder="e.g., 18x8.5"
-                    />
-                  )}
+                
 
-                {/* YouTube Video ID for all products */}
-                <FormInput
-                  label="YouTube Video ID"
-                  value={formData.video}
-                  onChange={(e) => handleInputChange("video", e.target.value)}
-                  placeholder="Enter YouTube video ID"
-                />
-
-                <FormTextEditor
-                  label="Description"
-                  value={formData.description}
-                  onChange={(value) => handleInputChange("description", value)}
-                  placeholder="Enter product description..."
-                />
-
-                <FormTextEditor
-                  label="Features"
-                  value={formData.features}
-                  onChange={(value) => handleInputChange("features", value)}
-                  placeholder="Enter product features..."
-                />
-
-                <FormTextEditor
-                  label="Fitment"
-                  value={formData.fitment}
-                  onChange={(value) => handleInputChange("fitment", value)}
-                  placeholder="Enter fitment information..."
-                />
+                
               </div>
             </div>
 
