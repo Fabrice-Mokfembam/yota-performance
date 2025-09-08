@@ -212,6 +212,15 @@ const ProductDetailPage = () => {
                   <p className="text-sm text-gray-600">Stock</p>
                   <p className="font-semibold text-gray-900">{product.quantity_left}</p>
                 </div>
+               
+              </div>
+              <div className="flex items-center p-3 bg-green-50 rounded-lg">
+                <Package className="h-5 w-5 text-green-600 mr-3" />
+                <div>
+                  <p className="text-sm text-gray-600">shipment</p>
+                  <p className="font-semibold text-gray-900">{product.shipment} business days</p>
+                </div>
+               
               </div>
               <div className="flex items-center p-3 bg-yellow-50 rounded-lg">
                 <Star className="h-5 w-5 text-yellow-600 mr-3" />
