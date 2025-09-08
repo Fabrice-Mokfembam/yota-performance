@@ -279,8 +279,8 @@ const AddProductPage = () => {
                   required
                   error={errors.images}
                 />
-
-                <FormInput
+<div className="flex gap-2">
+  <FormInput
                   label="Price ($)"
                   type="number"
                   value={formData.price}
@@ -301,6 +301,9 @@ const AddProductPage = () => {
                   required
                   error={errors.quantity_left}
                 />
+
+</div>
+                
 
                 {formData.quantity_left === "-1" && (
                   <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
