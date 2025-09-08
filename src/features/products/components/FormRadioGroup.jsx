@@ -15,7 +15,7 @@ const FormRadioGroup = ({
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </label>
-      <div className="space-y-2">
+      <div className="space-y-2 flex flex-wrap gap-2">
         {options.map((option) => (
           <label key={option.value} className="flex items-center">
             <input
