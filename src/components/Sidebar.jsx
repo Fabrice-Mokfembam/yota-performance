@@ -15,6 +15,7 @@ import {
   ChevronDown,
   ChevronRight
 } from "lucide-react";
+import logoImage from "../assets/images/load.svg";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -101,9 +102,9 @@ const Sidebar = () => {
   return (
     <aside className="w-64 bg-gray-50 h-screen border-r border-gray-200 flex flex-col sticky top-0">
       {/* Logo */}
-      <div className=" h-18 border-b border-gray-200">
-        <div className="flex h-full items-center">
-          <img src="/src/assets/images/load.svg" alt="Logo" className=" w-full h-full  -mt-5 " />
+      <div className="h-18 border-b border-gray-200 p-4">
+        <div className="flex h-full items-center justify-center">
+          <img src={logoImage} alt="Logo" className="max-h-12 w-auto object-contain" />
           {/* <div>
             <div className="text-red-600 font-bold text-lg">VOTAPERFORMANCE</div>
             <div className="text-gray-500 text-sm">SHOP.COM</div>
