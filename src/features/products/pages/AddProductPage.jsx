@@ -56,7 +56,29 @@ const AddProductPage = () => {
   const uploadImagesMutation = useUploadImages();
 
   const handleInputChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev) => {
+      const newData = { ...prev, [field]: value };
+      
+      // If car model changes, clear category selection if it's no longer available
+      if (field === "car_model") {
+        const availableCategories = getCategoryOptions();
+        const currentCategory = newData.category;
+        
+        // Check if current category is still available
+        const isCategoryStillAvailable = availableCategories.some(
+          cat => cat.value === currentCategory
+        );
+        
+        if (currentCategory && !isCategoryStillAvailable) {
+          newData.category = "";
+          newData.subcategory = "";
+          newData.final_subcategory = "";
+        }
+      }
+      
+      return newData;
+    });
+    
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));
@@ -149,6 +171,36 @@ const AddProductPage = () => {
     }
   };
 
+  // Check if the selected car model is eligible for special categories
+  const isEligibleForSpecialCategories = () => {
+    if (!formData.car_model) return false;
+    
+    const specialModels = [
+      "MK4 SUPRA (A80) (1993 - 2002)",
+      "MK5 GR SUPRA (A90) (2019 - Present)",
+      "ZN6 (Toyota GR86) (2012 - 2020)",
+      "ZN7/ZN8 (Toyota GR86) (2021 - Present)",
+      "Toyota Corolla GR (2023+)"
+    ];
+    
+    return specialModels.includes(formData.car_model);
+  };
+
+  // Check if the selected car model is eligible for Fog Lights
+  const isEligibleForFogLights = () => {
+    if (!formData.car_model) return false;
+    
+    // Fog Lights available for all Toyota Camry and Toyota Corolla models EXCEPT 2023+ GR Corolla
+    const fogLightsEligibleModels = [
+      "8th gen Toyota Camry (2018 - 2024)",
+      "7th gen Toyota Camry (2015 - 2017)",
+      "12th gen Toyota Corolla (2019+)",
+      "11th gen Toyota Corolla (2014 - 2019)"
+    ];
+    
+    return fogLightsEligibleModels.includes(formData.car_model);
+  };
+
   const getCategoryOptions = () => {
     if (!formData.fit_position) return [];
 
@@ -158,26 +210,51 @@ const AddProductPage = () => {
           value: item.text,
           label: item.text,
         }));
-      case "interior":
-        return itemsInterior.map((item) => ({
+      case "interior": {
+        // Filter out "Roll Bars" if not eligible for special categories
+        const interiorItems = itemsInterior.filter(item => {
+          if (item.text === "Roll Bars") {
+            return isEligibleForSpecialCategories();
+          }
+          return true;
+        });
+        return interiorItems.map((item) => ({
           value: item.text,
           label: item.text,
         }));
-      case "exterior":
-        return itemsExterior.map((item) => ({
+      }
+      case "exterior": {
+        // Filter out special exterior items if not eligible
+        const exteriorItems = itemsExterior.filter(item => {
+          const specialExteriorItems = ["License plate", "Roof Top", "Doors"];
+          if (specialExteriorItems.includes(item.text)) {
+            return isEligibleForSpecialCategories();
+          }
+          return true;
+        });
+        return exteriorItems.map((item) => ({
           value: item.text,
           label: item.text,
         }));
-      case "body kit":
+      }
+      case "aero kits":
         return itemsBodykits.map((item) => ({
           value: item.text,
           label: item.text,
         }));
-      case "lighting":
-        return itemsLighting.map((item) => ({
+      case "lighting": {
+        // Filter out "Fog lights" if not eligible for fog lights
+        const lightingItems = itemsLighting.filter(item => {
+          if (item.text === "Fog lights") {
+            return isEligibleForFogLights();
+          }
+          return true;
+        });
+        return lightingItems.map((item) => ({
           value: item.text,
           label: item.text,
         }));
+      }
       default:
         return [];
     }
@@ -491,6 +568,27 @@ const AddProductPage = () => {
                   onChange={(e) => handleInputChange("video", e.target.value)}
                   placeholder="Enter YouTube video ID"
                 />
+                
+                {/* YouTube Video Preview */}
+                {formData.video && (
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Video Preview
+                    </label>
+                    <div className="relative w-full max-w-2xl">
+                      <iframe
+                        width="100%"
+                        height="315"
+                        src={`https://www.youtube.com/embed/${formData.video}`}
+                        title="YouTube video player"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                        className="rounded-lg shadow-sm"
+                      ></iframe>
+                    </div>
+                  </div>
+                )}
 
                 <FormInput
                   label="SKU"

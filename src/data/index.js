@@ -1,7 +1,6 @@
 export const itemsOther = [
     { text: "Exhaust", selected: false },
     { text: "Suspension parts", selected: false },
-    { text: "Wheel", selected: true },
   ];
   
   
@@ -26,49 +25,51 @@ export const SuspensionPartsSubCategory = [
   
   
  export const itemsBodykits = [
-    { text: "Hood", selected: false },
-    { text: "Bumpers", selected: false },
-    { text: "Fenders", selected: false },
-    { text: "Rear Trunk", selected: false },
-    
+    { text: "Wide Body kit", selected: false },
+    { text: "Wings", selected: false },
+    { text: "Splitters", selected: false },
+    { text: "Diffusers", selected: false },
+    { text: "Rear Spoilers", selected: false },
+    { text: "Canards", selected: false },
+    { text: "Side skirts", selected: false },
   ];
   
 export const itemsInterior = [
   { text: "Shift knob & pedals", selected: false },
   { text: "Steering wheel & Airbags", selected: false },
-  { text: "Seats & Covers", selected: false },
-  { text: "Dashboard panel", selected: false },
-  { text: "Center console", selected: false },
+  { text: "Seat & covers", selected: false },
+  { text: "Dashboard Panel", selected: false },
+  { text: "Center Console", selected: false },
   { text: "Floor mats", selected: false },
   { text: "Door & trim panels", selected: false },
   { text: "Lighting kit", selected: false },
-  { text: "Roll Bars", selected: false }, // Added Roll Bars
+  { text: "Roll Bars", selected: false },
 ];
 
 export const itemsLighting = [
-  { text: "Head Lights", selected: false },
-  { text: "Tail Lights", selected: false },
-  { text: "Fog Lights", selected: false }, // Added Fog Lights
+  { text: "Head lights", selected: false },
+  { text: "Tail lights", selected: false },
+  { text: "Fog lights", selected: false },
 ];
 
 export const itemsExterior = [
+  { text: "Hood", selected: false },
+  { text: "Bumpers", selected: false },
+  { text: "Fenders", selected: false },
+  { text: "Rear Trunk", selected: false },
   { text: "Front Lip", selected: false },
-  { text: "Side skirt", selected: false },
-  { text: "Rear diffuser", selected: false },
-  { text: "Side mirrors & covers", selected: false },
-  { text: "Front Grille", selected: false },
-  { text: "Bumper grille", selected: false },
-  { text: "Covers", selected: false },
-  { text: "Rear Spoilers", selected: false },
-  { text: "Roof Tops", selected: false }, // Added Roof Tops
-  { text: "License Plates", selected: false }, // Added License Plates
-  { text: "Doors", selected: false }, // Added Doors
+  { text: "Side Skirts", selected: false },
+  { text: "Side Mirrors & covers", selected: false },
+  { text: "Front Grille", selected: false },
+  { text: "License plate", selected: false },
+  { text: "Roof Top", selected: false },
+  { text: "Doors", selected: false },
 ];
 export const categories = [
     { value: "lighting", label: "Lighting" },
     { value: "exterior", label: "Exterior" },
     { value: "interior", label: "Interior" },
-    { value: "body kit", label: "Body Kits" },
+    { value: "aero kits", label: "Aero Kits" },
     { value: "other", label: "Other" },
   ];
   
