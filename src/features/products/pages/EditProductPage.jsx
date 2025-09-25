@@ -83,6 +83,8 @@ const EditProductPage = () => {
   };
 
   const sanitizeNumber = (v) => {
+    // Special case for -1 (special order)
+    if (v === "-1" || v === -1) return -1;
     const n = Number.parseFloat(v);
     return Number.isFinite(n) ? n : 0;
   };
@@ -90,11 +92,12 @@ const EditProductPage = () => {
   // Populate form data when product data is available
   useEffect(() => {
     if (product) {
+      const quantity = product.quantity_left?.toString() || "";
       setFormData({
         product_name: product.product_name || "",
         sku: product.sku || "",
         price: product.price?.toString() || "",
-        quantity_left: product.quantity_left?.toString() || "",
+        quantity_left: quantity,
         car_brand: product.car_brand || "",
         car_model: product.car_model || "",
         make_material: product.make_material || "",
@@ -110,7 +113,7 @@ const EditProductPage = () => {
         features: product.features || "",
         fitment: product.fitment || "",
         video: product.video || "",
-        shipment: product.shipment || "1",
+        shipment: quantity === "-1" ? (product.shipment || "1") : "1",
         images: product.images || [],
       });
     }
@@ -134,6 +137,13 @@ const EditProductPage = () => {
           newData.category = "";
           newData.subcategory = "";
           newData.final_subcategory = "";
+        }
+      }
+      
+      // If quantity changes, set shipment to "1" if quantity is not "-1"
+      if (field === "quantity_left") {
+        if (value !== "-1") {
+          newData.shipment = "1";
         }
       }
       
@@ -253,17 +263,8 @@ const EditProductPage = () => {
 
   // Check if the selected car model is eligible for Fog Lights
   const isEligibleForFogLights = () => {
-    if (!formData.car_model) return false;
-    
-    // Fog Lights available for all Toyota Camry and Toyota Corolla models EXCEPT 2023+ GR Corolla
-    const fogLightsEligibleModels = [
-      "8th gen Toyota Camry (2018 - 2024)",
-      "7th gen Toyota Camry (2015 - 2017)",
-      "12th gen Toyota Corolla (2019+)",
-      "11th gen Toyota Corolla (2014 - 2019)"
-    ];
-    
-    return fogLightsEligibleModels.includes(formData.car_model);
+    // Fog Lights now available for all models
+    return true;
   };
 
   const getCategoryOptions = () => {
@@ -290,10 +291,11 @@ const EditProductPage = () => {
       case "exterior": {
         // Filter out special exterior items if not eligible
         const exteriorItems = itemsExterior.filter(item => {
-          const specialExteriorItems = ["License plate", "Roof Top", "Doors"];
+          const specialExteriorItems = ["Roof Top", "Doors"];
           if (specialExteriorItems.includes(item.text)) {
             return isEligibleForSpecialCategories();
           }
+          // License plate is now available for all models
           return true;
         });
         return exteriorItems.map((item) => ({
@@ -525,10 +527,8 @@ const EditProductPage = () => {
                       ]}
                       required
                     />
-                    {}
                   </div>
                 )}
-<div>{formData.shipment} Business Days</div>
                 <FormRadioGroup
                   label="Car Brand"
                   value={formData.car_brand}

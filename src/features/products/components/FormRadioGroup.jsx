@@ -15,9 +15,9 @@ const FormRadioGroup = ({
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </label>
-      <div className="space-y-2 flex flex-wrap gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
         {options.map((option) => (
-          <label key={option.value} className="flex items-center">
+          <label key={option.value} className="flex items-center space-x-2">
             <input
               type="radio"
               value={option.value}
@@ -25,7 +25,7 @@ const FormRadioGroup = ({
               onChange={onChange}
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
             />
-            <span className="ml-2 text-sm text-gray-700">{option.label}</span>
+            <span className="text-sm text-gray-700">{option.label}</span>
           </label>
         ))}
       </div>

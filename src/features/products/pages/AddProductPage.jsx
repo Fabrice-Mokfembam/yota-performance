@@ -55,6 +55,13 @@ const AddProductPage = () => {
   const addProductMutation = useAddProduct();
   const uploadImagesMutation = useUploadImages();
 
+  const sanitizeNumber = (v) => {
+    // Special case for -1 (special order)
+    if (v === "-1" || v === -1) return -1;
+    const n = Number.parseFloat(v);
+    return Number.isFinite(n) ? n : 0;
+  };
+
   const handleInputChange = (field, value) => {
     setFormData((prev) => {
       const newData = { ...prev, [field]: value };
@@ -73,6 +80,13 @@ const AddProductPage = () => {
           newData.category = "";
           newData.subcategory = "";
           newData.final_subcategory = "";
+        }
+      }
+      
+      // If quantity changes, set shipment to "1" if quantity is not "-1"
+      if (field === "quantity_left") {
+        if (value !== "-1") {
+          newData.shipment = "1";
         }
       }
       
@@ -123,8 +137,8 @@ const AddProductPage = () => {
       // Prepare product data
       const productData = {
         ...formData,
-        price: Number.parseFloat(formData.price),
-        quantity_left: Number.parseFloat(formData.quantity_left),
+        price: sanitizeNumber(formData.price),
+        quantity_left: sanitizeNumber(formData.quantity_left),
         images: formData.images.map((img) => img.name),
         rating: 1,
       };
@@ -188,17 +202,8 @@ const AddProductPage = () => {
 
   // Check if the selected car model is eligible for Fog Lights
   const isEligibleForFogLights = () => {
-    if (!formData.car_model) return false;
-    
-    // Fog Lights available for all Toyota Camry and Toyota Corolla models EXCEPT 2023+ GR Corolla
-    const fogLightsEligibleModels = [
-      "8th gen Toyota Camry (2018 - 2024)",
-      "7th gen Toyota Camry (2015 - 2017)",
-      "12th gen Toyota Corolla (2019+)",
-      "11th gen Toyota Corolla (2014 - 2019)"
-    ];
-    
-    return fogLightsEligibleModels.includes(formData.car_model);
+    // Fog Lights now available for all models
+    return true;
   };
 
   const getCategoryOptions = () => {
@@ -226,10 +231,11 @@ const AddProductPage = () => {
       case "exterior": {
         // Filter out special exterior items if not eligible
         const exteriorItems = itemsExterior.filter(item => {
-          const specialExteriorItems = ["License plate", "Roof Top", "Doors"];
+          const specialExteriorItems = ["Roof Top", "Doors"];
           if (specialExteriorItems.includes(item.text)) {
             return isEligibleForSpecialCategories();
           }
+          // License plate is now available for all models
           return true;
         });
         return exteriorItems.map((item) => ({
